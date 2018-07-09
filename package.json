@@ -1,0 +1,14 @@
+{
+  "name": "@aredridel/webaudio-and-music-in-the-browser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aredridel/webaudio-and-music-in-the-browser.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aredridel/webaudio-and-music-in-the-browser/issues"
+  },
+  "homepage": "https://github.com/aredridel/webaudio-and-music-in-the-browser#readme"
+}
