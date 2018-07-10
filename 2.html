@@ -12,20 +12,18 @@
 
 
         <script type="module">
-            const ctx = new AudioContext()
-            const osc = new OscillatorNode(ctx, { frequency: 360 })
-                osc.start()
+            import { webaudio } from './browser.js';
+            const tau = Math.PI * 2
+            const frequency = 360
 
-            function start() {
-                osc.connect(ctx.destination)
+            function sine(time, i){
+                return Math.sin(time * tau * frequency)
             }
 
-            function stop() {
-                osc.disconnect()
-            }
+            const channel = webaudio(sine);
 
-            document.getElementById('play').addEventListener('click', e => start())
-            document.getElementById('stop').addEventListener('click', e => stop())
+            document.getElementById('play').addEventListener('click', e => channel.play())
+            document.getElementById('stop').addEventListener('click', e => channel.stop())
         </script>
 
         <script>
