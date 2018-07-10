@@ -1,2 +1,2 @@
 import webaudio from 'webaudio';
-export default webaudio;
+export { webaudio };

@@ -2,14 +2,17 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <link rel='stylesheet' href='style.css'>
     </head>
     <body>
 
         <button id="play">Play</button>
         <button id="stop">Stop</button>
+        <div id='display'></div>
+
 
         <script type="module">
-            import webaudio from './browser.js';
+            import { webaudio } from './browser.js';
             const tau = Math.PI * 2
             const frequency = 555
 
@@ -21,6 +24,11 @@
 
             document.getElementById('play').addEventListener('click', e => channel.play())
             document.getElementById('stop').addEventListener('click', e => channel.stop())
+        </script>
+
+        <script>
+            document.getElementById('display').innerText = 
+                document.querySelector('script[type=module]').innerText.replace(/^ {12}/mg, '')
         </script>
     </body>
 </html>
