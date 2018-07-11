@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Web Audio</title>
+        <style>
+            html { height: 100%; box-sizing: border-box; display: flex; flex-direction: column }
+            * { box-sizing: inherit }
+            body { height: 100%; display: flex; flex-direction: column }
+            iframe { flex-grow: 1; border: 0 }
+        </style>
+    </head>
+    <body>
+        <iframe src="1.html"></iframe>
+        <div>
+            <button id="prev">Prev</button>
+            <button id="next">Next</button>
+        </div>
+
+        <script type="module">
+            let slide = 1
+            const prev = document.getElementById('prev')
+            const next = document.getElementById('next')
+            const iframe = document.querySelector('iframe')
+            prev.addEventListener('click', () => iframe.src = `${--slide}.html`)
+            next.addEventListener('click', () => iframe.src = `${++slide}.html`)
+        </script>
+    </body>
+</html>
