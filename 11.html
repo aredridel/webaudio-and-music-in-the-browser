@@ -18,7 +18,7 @@
         <div>
             <button id="play">Play</button>
             <button id="stop">Stop</button>
-            <input type='range' min="0" max="1" value='0.8' id='volume' step='any'>
+            <input type='range' min="0" max="1" value='1.0' id='volume' step='any'>
             <button id="gM">g Maj</button>
             <button id="em">e min</button>
         </div>
@@ -31,9 +31,6 @@
 
 
         <script type="module">
-            import { webaudio } from './browser.js';
-            const tau = Math.PI * 2
-
             const context = new AudioContext()
             const volume = document.getElementById('volume')
 
@@ -56,11 +53,11 @@
             document.getElementById('gM')
                 .addEventListener('click', e => guitar.strumChord(
                     context.currentTime, true,
-                    1, G_MAJOR))
+                    2, G_MAJOR))
             document.getElementById('em')
                 .addEventListener('click', e => guitar.strumChord(
                     context.currentTime, true,
-                    1, E_MINOR))
+                    2, E_MINOR))
 
             document.body.addEventListener('keydown', e => {
                 if (e.key == 'g') {
