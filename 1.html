@@ -17,7 +17,7 @@
         <script type="module">
             const ctx = new AudioContext()
             ctx.suspend()
-            const osc = new OscillatorNode(ctx, { frequency: 360 })
+            const osc = new OscillatorNode(ctx, { frequency: 440 })
             osc.start()
 
             const gain = new GainNode(ctx, { gain: 0.2 })
