@@ -47,6 +47,10 @@ class Guitar {
 
     }
 
+    pluck(time, stringNumber, velocity, note) {
+        this.strings[stringNumber].pluck(time, velocity, note);
+    }
+
     setMode(mode) {
         for (var i = 0; i < 6; i++) {
             this.strings[i].mode = mode;

@@ -39,8 +39,6 @@
 
             context.suspend()
 
-            /////
-
 
             const gain = new GainNode(context)
             gain.gain.value = volume.value
@@ -48,6 +46,8 @@
             const wavy = WavyJones(context, document.getElementById('osc'))
             gain.connect(wavy)
             wavy.connect(context.destination)
+
+            /////
 
             import { Guitar, G_MAJOR, E_MINOR } from './guitar/guitar.js';
 
@@ -62,7 +62,21 @@
                     context.currentTime, true,
                     1, E_MINOR))
 
+            document.body.addEventListener('keydown', e => {
+                if (e.key == 'g') {
+                    guitar.strumChord(context.currentTime, true, 1, G_MAJOR)
+                } else if (e.key == 'e') {
+                    guitar.strumChord(context.currentTime, true, 1, E_MINOR)
+                }
+            })
+
             /////
+
+            document.body.addEventListener('keydown', e => {
+                if (e.key == '1' || e.key == '2' || e.key == '3' || e.key == '4' || e.key == '5' || e.key == '6') {
+                    guitar.pluck(context.currentTime, Number(e.key) - 1, true, 1, 0)
+                }
+            })
 
             document.getElementById('play')
                 .addEventListener('click', e => context.resume())
