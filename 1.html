@@ -19,7 +19,10 @@
             ctx.suspend()
             const osc = new OscillatorNode(ctx, { frequency: 360 })
             osc.start()
-            osc.connect(ctx.destination)
+
+            const gain = new GainNode(ctx, { gain: 0.2 })
+            osc.connect(gain)
+            gain.connect(ctx.destination)
 
             document.getElementById('play')
                 .addEventListener('click', e => ctx.resume())

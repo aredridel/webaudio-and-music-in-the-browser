@@ -20,7 +20,7 @@
             const frequency = 360
 
             function sine(time, i){
-                return Math.sin(time * tau * frequency)
+                return Math.sin(time * tau * frequency) * 0.2
             }
 
             const channel = webaudio(sine);
