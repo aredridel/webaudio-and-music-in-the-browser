@@ -16,19 +16,15 @@
 
         <script type="module">
             const ctx = new AudioContext()
+            ctx.suspend()
             const osc = new OscillatorNode(ctx, { frequency: 360 })
             osc.start()
+            osc.connect(ctx.destination)
 
-            function start() {
-                osc.connect(ctx.destination)
-            }
-
-            function stop() {
-                osc.disconnect()
-            }
-
-            document.getElementById('play').addEventListener('click', e => start())
-            document.getElementById('stop').addEventListener('click', e => stop())
+            document.getElementById('play')
+                .addEventListener('click', e => ctx.resume())
+            document.getElementById('stop') 
+                .addEventListener('click', e => ctx.suspend())
         </script>
 
         <script>

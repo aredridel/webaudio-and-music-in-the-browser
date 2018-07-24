@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel='stylesheet' href='style.css'>
+        <style>
+                * { -webkit-user-select: none }
+            #display { font-size: 1.5vw }
+            .contain { position: relative }
+            .fill { position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; }
+            body { display: flex; height: 100%; flex-direction: column; margin: 0 }
+            html { height: 100% }
+            .flex-grow { flex-grow: 1 }
+            #display { margin: 1em }
+            .black { fill: black; }
+            .white { fill: white; stroke: black }
+            #piano { height: 25vh }
+        </style>
+    </head>
+    <body>
+
+        <div>
+            <button id="play">Play</button>
+            <button id="stop">Stop</button>
+            <input type='range' min="0" max="1" value='0.5' id='volume' step='any'>
+        </div>
+        <div class='flex-grow'>
+            <div class='contain'>
+                <div id='display'></div>
+                <canvas class="fill" id="osc"></canvas>
+            </div>
+        </div>
+
+        <svg id="piano" viewBox="100 0 900 230">
+            <polygon points="200,10 230,10 230,100 245,100 245,220 200,220 200,10" class="white"  id="c" data-freq="261.626"/>
+            <polygon points="245,100 260,100 260,10 275,10 275,100 290,100 290,220 245,220 245,100" class="white" data-freq="293.665" id="d"/>
+            <polygon points="305,10 335,10 335,220 290,220 290,100 305,100 305,10" class="white" data-freq="329.628" id="e"/>
+            <polygon points="335,10 365,10 365,100 380,100 380,220 335,220 335,10" class="white" data-freq="349.228" id="f"/>
+            <polygon points="380,100 395,100 395,10 410,10 410,100 425,100 425,220 380,220 380,100" class="white" data-freq="391.995" id="g"/>
+            <polygon points="425,100 440,100 440,10 455,10 455,100 470,100 470,220 425,220 425,100" class="white" data-freq="440.000" id="a"/>
+            <polygon points="470,100 485,100 485,10 515,10 515,220 470,220 470,100" class="white" data-freq="493.883" id="b"/>
+            <polygon points="515,10 545,10 545,100 560,100 560,220 515,220 515,10" class="white" data-freq="523.251" id="c5"/>
+            <polygon points="560,100 575,100 575,10 590,10 590,100 605,100 605,220 560,220" class="white" data-freq="587.330" id="d5"/>
+            <polygon points="605,100 620,100 620,10 650,10 650,220 605,220 605,100" class="white" data-freq="659.255" id="e5"/>
+            <polygon points="650,10 680,10 680,100 695,100 695,220 650,220 650,10" class="white" data-freq="698.456" id="f5"/>
+            <polygon points="695,100 710,100 710,10 725,10 725,100 740,100 740,220 695,220 695,100" class="white" data-freq="783.991" id="g5"/>
+            <polygon points="740,100 755,100 755,10 770,10 770,100 785,100 785,220 740,220 740,100" class="white" data-freq="880.000" id="a6"/>
+            <polygon points="785,100 800,100 800,10 830,10 830,220 785,220 785,100" class="white" data-freq="987.767" id="b6"/>
+            <polygon points="230,10 260,10 260,100 230,100 230,10" class="black" data-freq="277.183" id="c4s"/>
+            <polygon points="275,10 305,10 305,100 275,100 275,10" class="black" data-freq="311.127" id="d4s"/>
+            <polygon points="365,10 395,10 395,100 365,100 365,10" class="black" data-freq="369.994" id="f4s"/>
+            <polygon points="410,10 440,10 440,100 410,100 410,10" class="black" data-freq="415.305" id="g4s"/>
+            <polygon points="455,10 485,10 485,100 455,100 455,10" class="black" data-freq="466.164" id="a4s"/>
+            <polygon points="545,10 575,10 575,100 545,100 545,10" class="black" data-freq="554.365" id="c5s"/>
+            <polygon points="590,10 620,10 620,100 590,100 590,10" class="black" data-freq="622.254" id="d5s"/>
+            <polygon points="680,10 710,10 710,100 680,100 680,10" class="black" data-freq="739.989" id="f5s"/>
+            <polygon points="725,10 755,10 755,100 725,100 725,10" class="black" data-freq="830.609" id="g5s"/>
+            <polygon points="770,10 800,10 800,100 770,100 770,10" class="black" data-freq="932.328" id="a6s"/>
+        </svg>
+
+        <script type="module">
+            import { webaudio } from './browser.js';
+            const tau = Math.PI * 2
+
+            const context = new AudioContext()
+            const volume = document.getElementById('volume')
+
+            context.suspend()
+
+
+            const source = new OscillatorNode(context, {
+                frequency: 0,
+            })
+            source.type = 'square'
+            source.start()
+
+            const gain = new GainNode(context)
+            gain.gain.value = volume.value
+            source.connect(gain)
+
+            const wavy = WavyJones(context, document.getElementById('osc'))
+            gain.connect(wavy)
+            wavy.connect(context.destination)
+
+            /////
+
+            document.getElementById('piano')
+                .addEventListener('mousedown', e => {
+                    source.frequency.setValueAtTime(
+                        e.target.getAttribute('data-freq'),
+                        context.currentTime
+                    )
+                })
+
+            document.getElementById('piano')
+                .addEventListener('mouseup', e => {
+                    source.frequency.setValueAtTime(
+                        0,
+                        context.currentTime
+                    )
+                })
+
+            /////
+
+            document.getElementById('play').addEventListener('click', e => {
+                context.resume()
+                requestAnimationFrame(wavy.draw)
+            })
+            document.getElementById('stop')
+                .addEventListener('click', e => context.suspend())
+            document.getElementById('volume')
+                .addEventListener('input', e => gain.gain.setValueAtTime(e.target.value, context.currentTime))
+
+            function WavyJones(context, elem) { /* Thanks Stuart Memo */
+                const analyser = context.createAnalyser()
+                const data = new Float32Array(analyser.frequencyBinCount)
+                const canvas = elem.getContext('2d')
+                elem.setAttribute('width', analyser.frequencyBinCount)
+                elem.setAttribute('height', 1000)
+
+                function draw() {
+
+                    canvas.clearRect(0, 0, elem.width, elem.height)
+                    canvas.strokeWidth = 2
+
+                    if (context.state != 'suspended') {
+                        analyser.getFloatTimeDomainData(data)
+
+                        canvas.beginPath()
+                        canvas.moveTo(0, elem.height / 2)
+                        for (var i = 0; i < data.length; i++) {
+                            canvas.lineTo(i, elem.height / 2 + (data[i] * elem.height / 2))
+                        }
+                        canvas.stroke()
+                    }
+
+                    requestAnimationFrame(draw)
+                }
+
+                analyser.draw = draw
+
+                return analyser
+            }
+
+        </script>
+
+        <script type="module">
+            const text = document.querySelector('script[type=module]').innerText.replace(/^ {12}/mg, '')
+            document.getElementById('display').innerText = text.split('/////')[1]
+        </script>
+    </body>
+</html>
