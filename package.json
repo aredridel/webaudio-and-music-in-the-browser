@@ -14,6 +14,9 @@
   "dependencies": {
     "webaudio": "^1.0.1"
   },
+  "scripts": {
+    "prepare": "rollup -c rollup.config.js"
+  },
   "devDependencies": {
     "rollup": "^0.62.0",
     "rollup-plugin-cjs-es": "^0.5.1",
